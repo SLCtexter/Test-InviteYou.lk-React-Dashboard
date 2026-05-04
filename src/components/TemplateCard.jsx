@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const TemplateCard = ({ template, isSelected, onSelect, onViewFull, category }) => {
+const TemplateCard = ({ template, isSelected, onSelect, onViewFull, onProceed, category }) => {
   const [isHovered, setIsHovered] = useState(false);
   const containerRef = useRef(null);
   const intervalRef = useRef(null);
@@ -52,7 +52,6 @@ const TemplateCard = ({ template, isSelected, onSelect, onViewFull, category }) 
       container.style.cssText = 'height: 300px; overflow-y: scroll; display: block;';
       userScrolling.current = false;
       container.scrollTop = 0;
-      
       container.addEventListener('wheel', onUserWheel);
 
       const attemptAuto = () => {
@@ -84,24 +83,40 @@ const TemplateCard = ({ template, isSelected, onSelect, onViewFull, category }) 
     }
   }, [isHovered, isSelected, category, template.fullImageUrl, template.previewImageUrl]);
 
+  const handleMouseEnter = () => {
+    if (category === 'web' && template.fullImageUrl) setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isSelected) setIsHovered(false);
+  };
+
+  const { name, price, previewImageUrl, fullImageUrl } = template;
+
   return (
     <div className={`template-card ${isSelected ? 'selected' : ''}`} onClick={onSelect}>
       <div
         className="preview-img"
         ref={containerRef}
-        onMouseEnter={() => {
-          if (category === 'web' && template.fullImageUrl) setIsHovered(true);
-        }}
-        onMouseLeave={() => {
-          if (!isSelected) setIsHovered(false);
-        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        <img src={template.previewImageUrl} alt={template.name} />
+        <img src={previewImageUrl} alt={name} />
       </div>
-      <div className="template-name">{template.name}</div>
-      <div className="template-price">LKR {template.price.toFixed(2)}</div>
-      <button className="view-template-btn" onClick={(e) => { e.stopPropagation(); onViewFull(); }}>
+      <div className="template-name">{name}</div>
+      <div className="template-price">LKR {price.toFixed(2)}</div>
+      <button
+        className="view-template-btn"
+        onClick={(e) => { e.stopPropagation(); onViewFull(); }}
+      >
         View Template
+      </button>
+      <button
+        className="proceed-btn"
+        onClick={(e) => { e.stopPropagation(); onProceed(); }}
+        disabled={!isSelected}
+      >
+        Proceed
       </button>
     </div>
   );
