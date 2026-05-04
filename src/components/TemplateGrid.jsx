@@ -3,7 +3,7 @@ import { db } from '../firebase';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import TemplateCard from './TemplateCard';
 
-const TemplateGrid = ({ category, onTemplateSelect, selectedTemplateId }) => {
+const TemplateGrid = ({ category, onTemplateSelect, selectedTemplateId, onProceed }) => {
   const [templates, setTemplates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,7 +72,8 @@ const TemplateGrid = ({ category, onTemplateSelect, selectedTemplateId }) => {
           isSelected={selectedTemplateId === template.id}
           onSelect={() => onTemplateSelect(template)}
           onViewFull={() => handleViewFull(template.fullImageUrl)}
-          category={category}  
+          onProceed={() => onProceed(template)}
+          category={category}
         />
       ))}
     </div>
